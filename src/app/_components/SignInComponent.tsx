@@ -76,11 +76,4 @@ export default function SignInComponent() {
  * - When users click it, they get taken to a sign-in page
  * - They can sign in with whatever methods you've set up (Google, GitHub, etc.)
  * - After signing in, they come back to your website logged in!
- *
- * Why this is better than the complicated version:
- * 1. Much simpler - just one button
- * 2. Uses NextAuth which is super secure
- * 3. Works with many sign-in methods (Google, GitHub, Facebook, etc.)
- * 4. Handles all the hard security stuff for us
- * 5. Less code = fewer bugs!
  */

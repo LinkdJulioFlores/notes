@@ -48,8 +48,9 @@ export const noteRouter = createTRPCRouter({
 
   // READ
   findAllNotes: protectedProcedure.query(async ({ ctx }) => {
-    await updateHost(ctx, "NOTE_READ", "");
-    return (await ctx.db.note.findMany()) ?? null;
+    const foundNotes = (await ctx.db.note.findMany()) ?? null;
+    await updateHost(ctx, "NOTE_READ", foundNotes);
+    return foundNotes;
   }),
 
   // DELETE
@@ -65,7 +66,6 @@ export const noteRouter = createTRPCRouter({
       if (note) success = true;
 
       await updateHost(ctx, "NOTE_DELETE", note);
-
       return success;
     }),
 });
@@ -81,7 +81,12 @@ async function updateHost<T>(ctx: TRPCContext, type: EventType, data: T) {
     },
   });
 
-  if (webhookInfo) {
-    await WebhookService.updateWebhook(webhookInfo.hostURL, type, data);
+  if (!webhookInfo) return;
+
+  for (const eventInfo of webhookInfo.webhookEvents) {
+    if (eventInfo.event === type && eventInfo.enabled) {
+      await WebhookService.updateWebhook(webhookInfo.hostURL, type, data);
+      return;
+    }
   }
 }
