@@ -22,8 +22,8 @@ export default function HomeComponent() {
       setNote("");
     },
     onError: () => {
-      console.error("Could not create the note")
-    }
+      console.error("Could not create the note");
+    },
   });
   const setupWebhookURL = api.webhookInfo.setWebhookURL.useMutation({
     onSuccess: async (webhookInfo) => {
@@ -32,8 +32,8 @@ export default function HomeComponent() {
       setUrl("");
     },
     onError: () => {
-      console.error("Could not create the web hook")
-    }
+      console.error("Could not create the web hook");
+    },
   });
   // one mutation for all toggles
   const setEvent = api.webhookEvent.setEvent.useMutation({
@@ -45,9 +45,12 @@ export default function HomeComponent() {
   const { data: posts } = api.note.findAllNotes.useQuery(undefined, {
     enabled: isAuthed,
   });
-  const { data: webhook } = api.webhookInfo.findWebhookInto.useQuery(undefined, {
-    enabled: isAuthed,
-  });
+  const { data: webhook } = api.webhookInfo.findWebhookInto.useQuery(
+    undefined,
+    {
+      enabled: isAuthed,
+    },
+  );
   const { data: events } = api.webhookEvent.getEvents.useQuery(undefined, {
     enabled: isAuthed,
   });
@@ -62,10 +65,10 @@ export default function HomeComponent() {
 
   useEffect(() => {
     if (!events) return;
-    setOnNoteCreate(!!events.find(e => e.event === "NOTE_CREATE")?.enabled);
-    setOnNoteRead(!!events.find(e => e.event === "NOTE_READ")?.enabled);
-    setOnNoteUpdate(!!events.find(e => e.event === "NOTE_UPDATE")?.enabled);
-    setOnNoteDelete(!!events.find(e => e.event === "NOTE_DELETE")?.enabled);
+    setOnNoteCreate(!!events.find((e) => e.event === "NOTE_CREATE")?.enabled);
+    setOnNoteRead(!!events.find((e) => e.event === "NOTE_READ")?.enabled);
+    setOnNoteUpdate(!!events.find((e) => e.event === "NOTE_UPDATE")?.enabled);
+    setOnNoteDelete(!!events.find((e) => e.event === "NOTE_DELETE")?.enabled);
   }, [events]);
 
   if (status === "loading") return <div>Loading...</div>;
@@ -73,46 +76,46 @@ export default function HomeComponent() {
   if (!session) return <div>Loading...</div>;
 
   /**
-  * Caches the note value
-  */
+   * Caches the note value
+   */
   const handleSetNote = (note: string) => {
     setNote(note);
-  }
+  };
 
   return (
-    <main className="w-full h-screen p-4">
-      <div className="flex flex-col h-full w-full">
+    <main className="h-screen w-full p-4">
+      <div className="flex h-full w-full flex-col">
         {/* Q2 */}
-        <div className="flex flex-row w-full h-full">
-          <div className="flex flex-col h-full items-center w-full">
+        <div className="flex h-full w-full flex-row">
+          <div className="flex h-full w-full flex-col items-center">
             <h1 className="text-2xl">
-              <strong>
-                Create a note
-              </strong>
+              <strong>Create a note</strong>
             </h1>
             <div className="w-full">
               <form
                 className="flex flex-col gap-1"
-                onSubmit={(e) => { e.preventDefault() }}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
               >
                 <label>Write your note</label>
                 <textarea
-                className="outline rounded-sm"
-                value={note}
-                onChange={(e) => handleSetNote(e.target.value)}
+                  className="rounded-sm outline"
+                  value={note}
+                  onChange={(e) => handleSetNote(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="w-full p-4 bg-black text-white rounded-lg cursor-pointer"
+                  className="w-full cursor-pointer rounded-lg bg-black p-4 text-white"
                   onClick={(e) => {
                     e.preventDefault();
-                    createNote.mutate(note)
+                    createNote.mutate(note);
                   }}
                 >
                   Save note
                 </button>
               </form>
-              <div className="h-full overflow-y-auto flex flex-col gap-2 m-1">
+              <div className="m-1 flex h-full flex-col gap-2 overflow-y-auto">
                 {notes.map((note, idx) => (
                   <NoteItem key={idx} note={note} />
                 ))}
@@ -121,15 +124,13 @@ export default function HomeComponent() {
           </div>
 
           {/* Q1 Controls what events the user wants to listen for */}
-          <div className="flex flex-col w-full h-full items-center">
+          <div className="flex h-full w-full flex-col items-center">
             <h1 className="text-2xl">
-              <strong>
-                events
-              </strong>
+              <strong>events</strong>
             </h1>
             <div className="flex flex-col gap-4">
               {CreateCheckbox("Create", onNoteCreate, (next) => {
-                setOnNoteCreate(next);                      // optimistic UI
+                setOnNoteCreate(next);
                 setEvent.mutate({ event: "NOTE_CREATE", enabled: next });
               })}
               {CreateCheckbox("Read", onNoteRead, (next) => {
@@ -147,16 +148,18 @@ export default function HomeComponent() {
             </div>
           </div>
         </div>
-        <div className="flex flex-row gap-4 w-full h-full">
+        <div className="flex h-full w-full flex-row gap-4">
           {/* Q3 */}
-          <div className="w-full flex flex-col">
+          <div className="flex w-full flex-col">
             <form
-              onSubmit={(e) => { e.preventDefault() }}
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
               className="flex flex-col gap-2"
             >
               <label>Set the webhook url</label>
               <input
-                className="outline rounded-sm"
+                className="rounded-sm outline"
                 type="text"
                 placeholder="example.com"
                 value={url}
@@ -165,10 +168,10 @@ export default function HomeComponent() {
               {chosenUrl}
               <button
                 type="submit"
-                className="w-full p-4 bg-black text-white rounded-lg cursor-pointer"
+                className="w-full cursor-pointer rounded-lg bg-black p-4 text-white"
                 onClick={(e) => {
                   e.preventDefault();
-                  setupWebhookURL.mutate(url)
+                  setupWebhookURL.mutate(url);
                 }}
               >
                 Set Webhook URL
@@ -176,9 +179,7 @@ export default function HomeComponent() {
             </form>
           </div>
           {/* Q4 */}
-          <div className="w-full">
-            Empty
-          </div>
+          <div className="w-full">Empty</div>
         </div>
       </div>
     </main>
@@ -188,15 +189,11 @@ export default function HomeComponent() {
 const CreateCheckbox = (
   title: string,
   value: boolean,
-  onToggle: (next: boolean) => void
+  onToggle: (next: boolean) => void,
 ) => (
   <div className="flex w-full justify-between gap-2">
     <label>On note {title}</label>
-    <input
-      type="checkbox"
-      checked={value}
-      onChange={() => onToggle(!value)}
-    />
+    <input type="checkbox" checked={value} onChange={() => onToggle(!value)} />
   </div>
 );
 
@@ -214,10 +211,10 @@ const NoteItem = ({ note }: { note: Note }) => {
   const [text, setText] = useState(note.data);
 
   return (
-    <div className="flex items-start gap-2 border rounded p-2">
+    <div className="flex items-start gap-2 rounded border p-2">
       {editing ? (
         <textarea
-          className="flex-1 border rounded p-1"
+          className="flex-1 rounded border p-1"
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
@@ -229,7 +226,7 @@ const NoteItem = ({ note }: { note: Note }) => {
         <div className="flex gap-2">
           <button
             type="button"
-            className="px-2 py-1 border rounded"
+            className="rounded border px-2 py-1"
             disabled={update.isPending || text.trim().length < 2}
             onClick={() => update.mutate({ ID: note.ID, data: text.trim() })}
           >
@@ -237,7 +234,7 @@ const NoteItem = ({ note }: { note: Note }) => {
           </button>
           <button
             type="button"
-            className="px-2 py-1 border rounded"
+            className="rounded border px-2 py-1"
             onClick={() => {
               setText(note.data);
               setEditing(false);
@@ -250,14 +247,14 @@ const NoteItem = ({ note }: { note: Note }) => {
         <div className="flex gap-2">
           <button
             type="button"
-            className="px-2 py-1 border rounded"
+            className="rounded border px-2 py-1"
             onClick={() => setEditing(true)}
           >
             Edit
           </button>
           <button
             type="button"
-            className="px-2 py-1 border rounded"
+            className="rounded border px-2 py-1"
             disabled={del.isPending}
             onClick={() => del.mutate(note.ID)}
           >
@@ -267,4 +264,4 @@ const NoteItem = ({ note }: { note: Note }) => {
       )}
     </div>
   );
-}
+};
