@@ -79,11 +79,11 @@ When prompted, choose:
 3. Navigate to **OAuth2 → General**
 4. Copy the **Client ID** → paste into `.env`:
    ```
-   DISCORD_CLIENT_ID=your_client_id
+   AUTH_DISCORD_ID=your_client_id
    ```
 5. Under **Client Secret**, click **Reset Secret**, then copy it:
    ```
-   DISCORD_CLIENT_SECRET=your_client_secret
+   AUTH_DISCORD_SECRET=your_client_secret
    ```
 6. Add a redirect URI:
    ```
